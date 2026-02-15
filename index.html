@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL.GLASS - Hero Grid</title>
+    <title>TERMINAL.GLASS // AGENT_DATA</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
             --color-bg: #000000;
             --color-accent: #00FF88;
-            --glass-border: rgba(0, 255, 136, 0.2);
+            --glass-border: rgba(0, 255, 136, 0.15);
             --font-mono: 'JetBrains Mono', monospace;
         }
 
@@ -20,158 +19,179 @@
             background: var(--color-bg);
             color: #fff;
             padding: 20px;
-            overflow-x: hidden;
-            background-image: radial-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
+            font-size: 11px;
+            overflow: hidden; /* Dashboard stílus: nincs görgetés, fix layout */
+            height: 100vh;
         }
 
-        /* GRID ELRENDEZÉS */
-        .hero-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: auto auto auto;
-            gap: 15px;
-            max-width: 1400px;
-            margin: 60px auto 0;
-        }
-
-        /* KÁRTYA STÍLUS */
-        .card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--glass-border);
-            padding: 20px;
-            position: relative;
-            backdrop-filter: blur(5px);
-            transition: 0.3s ease;
-        }
-        .card:hover { border-color: var(--color-accent); background: rgba(0, 255, 136, 0.03); }
-
-        /* EGYEDI SZÉLESSÉGEK */
-        .tactical-main { grid-column: span 3; }
-        .status-sidebar { grid-column: span 1; }
-        .archive-box { grid-column: span 2; }
-        .uplink-box { grid-column: span 2; }
-        .data-full { grid-column: span 4; }
-
-        /* SZÖVEG STÍLUSOK */
-        .accent { color: var(--color-accent); }
-        .label { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 5px; }
-        .title { font-size: 18px; font-weight: bold; letter-spacing: 2px; margin-bottom: 15px; }
-        .tech-text { font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.5; }
-
-        /* INTERAKTÍV ELEMEK */
-        .btn {
-            border: 1px solid var(--color-accent);
-            background: transparent;
-            color: var(--color-accent);
-            padding: 10px 15px;
-            font-family: var(--font-mono);
-            font-size: 10px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-        }
-        .btn:hover { background: var(--color-accent); color: #000; }
-
-        input {
-            width: 100%; background: #0a0a0a; border: 1px solid var(--glass-border);
-            padding: 10px; color: var(--color-accent); font-family: var(--font-mono); margin-top: 5px;
-        }
-
-        /* NAVBAR */
-        nav {
+        /* HEADER */
+        header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 20px; border: 1px solid var(--glass-border);
-            margin-bottom: 20px; max-width: 1400px; margin: 0 auto;
+            margin-bottom: 15px; text-transform: uppercase;
         }
 
-        @media (max-width: 1000px) {
-            .hero-grid { grid-template-columns: 1fr; }
-            .tactical-main, .status-sidebar, .archive-box, .uplink-box, .data-full { grid-column: span 1; }
+        /* GRID SYSTEM */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-rows: 1fr 200px;
+            gap: 15px;
+            height: calc(100vh - 80px);
         }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        .panel-header {
+            background: var(--glass-border);
+            padding: 8px 12px;
+            font-weight: bold;
+            display: flex; justify-content: space-between;
+        }
+
+        /* AGENT LIST */
+        .scroll-area { overflow-y: auto; flex-grow: 1; }
+        .agent-row {
+            display: flex; justify-content: space-between;
+            padding: 8px 12px; border-bottom: 1px solid rgba(0, 255, 136, 0.05);
+            cursor: pointer; transition: 0.2s;
+        }
+        .agent-row:hover { background: rgba(0, 255, 136, 0.1); color: var(--color-accent); }
+
+        /* CHART AREA (Minimalist Placeholder) */
+        .chart-container {
+            flex-grow: 1; position: relative;
+            display: flex; align-items: flex-end; gap: 10px; padding: 20px;
+        }
+        .bar { background: var(--color-accent); width: 100%; transition: height 0.5s ease; opacity: 0.6; }
+
+        /* LIVE LOG */
+        #log-stream { padding: 12px; font-size: 10px; line-height: 1.4; color: rgba(255, 255, 255, 0.7); }
+        .log-entry { margin-bottom: 8px; border-left: 1px solid var(--color-accent); padding-left: 8px; }
+
+        /* INTERACTIVE BUTTONS */
+        .btn-small {
+            background: transparent; border: 1px solid var(--color-accent);
+            color: var(--color-accent); padding: 2px 6px; font-family: var(--font-mono);
+            font-size: 9px; cursor: pointer;
+        }
+        .btn-small:hover { background: var(--color-accent); color: #000; }
+
+        .accent { color: var(--color-accent); }
+        .dim { opacity: 0.4; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="accent" style="font-size: 12px; font-weight: bold;">TERMINAL.GLASS // SYNC_ACTIVE</div>
-        <div style="font-size: 10px; opacity: 0.5;">LATENCY: 12ms // UPTIME: 1542:04:12</div>
-    </nav>
+    <header>
+        <div><span class="accent">●</span> SYSTEM_CORE // AGENT_DATA_OVERVIEW</div>
+        <div id="clock">00:00:00</div>
+        <div class="dim">SECURE_CHANNEL_88-X</div>
+    </header>
 
-    <div class="hero-grid">
+    <div class="dashboard">
         
-        <div class="card tactical-main">
-            <div class="label">Primary Interface</div>
-            <div class="title">SYNCHRONIZING_CORE_v2.7</div>
-            <div style="display: flex; gap: 40px;">
-                <div class="tech-text">
-                    <span class="accent">> Sector_002</span><br>
-                    N.LARYNGEUS SUPERIOR<br>
-                    RAMUS EXTERNUS // CONNECTED
+        <div class="panel">
+            <div class="panel-header"><span>AGENT_ALLOCATION</span><span>QTY</span></div>
+            <div class="scroll-area" id="agent-list">
                 </div>
-                <div class="tech-text">
-                    <span class="accent">> District_Tokyo</span><br>
-                    LOC: 35.652, 139.839<br>
-                    TEMP: 14°C
-                </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div class="panel" style="flex-grow: 1;">
+                <div class="panel-header">MISSION_ACTIVITY_OVERVIEW</div>
+                <div class="chart-container" id="chart">
+                    </div>
             </div>
-            <div style="margin-top: 20px; height: 2px; background: var(--glass-border); position: relative;">
-                <div style="position: absolute; left: 0; top: 0; height: 100%; width: 65%; background: var(--color-accent);"></div>
-            </div>
-        </div>
-
-        <div class="card status-sidebar">
-            <div class="label">Threat_Level</div>
-            <div class="title" style="color: #FF0055;">HIGH</div>
-            <div class="tech-text">System integrity at 88%</div>
-            <button class="btn">TERMINATE_PROCESS</button>
-        </div>
-
-        <div class="card archive-box">
-            <div class="label">Neural_Archive</div>
-            <div class="accent mono" style="margin-bottom: 10px;">Project_01 // Cyber_Aesthetics</div>
-            <div class="tech-text">Visual system development for high-frequency trading. Optimized for latency visualization.</div>
-        </div>
-
-        <div class="card archive-box">
-            <div class="label">Neural_Archive</div>
-            <div class="accent mono" style="margin-bottom: 10px;">Project_02 // Tactical_UI</div>
-            <div class="tech-text">HUD interface for medical-grade simulation environments. Latin nomenclature integration.</div>
-        </div>
-
-        <div class="card data-full">
-            <div class="label">System_Check_Logs</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 10px;">
-                <div class="tech-text" style="border-left: 1px solid var(--color-accent); padding-left: 10px;">
-                    <span class="accent">455.KL0.530</span><br>ACTIVE
-                </div>
-                <div class="tech-text" style="border-left: 1px solid var(--color-accent); padding-left: 10px;">
-                    <span class="accent">SPD.AD 200</span><br>450ms
-                </div>
-                <div class="tech-text" style="border-left: 1px solid var(--color-accent); padding-left: 10px;">
-                    <span class="accent">HEX_CODE</span><br>000:2009:5
-                </div>
-                <div class="tech-text" style="border-left: 1px solid var(--color-accent); padding-left: 10px;">
-                    <span class="accent">LOG_STAT</span><br>NO_REJECTION
+            <div class="panel" style="height: 200px;">
+                <div class="panel-header">MISSION_INFORMATION</div>
+                <div style="padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                    <div>
+                        <div class="accent">Successful Missions</div>
+                        <div style="font-size: 24px; margin: 10px 0;">426</div>
+                        <div class="dim">AVG_RISK: LOW</div>
+                    </div>
+                    <div>
+                        <div style="color: #ff0055;">Failed Missions</div>
+                        <div style="font-size: 24px; margin: 10px 0;">12</div>
+                        <div class="dim">AVG_RISK: HIGH</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card uplink-box">
-            <div class="label">Initialize_Uplink</div>
-            <input type="text" placeholder="IDENTITY_TAG">
-            <button class="btn">EXECUTE_TRANSMISSION</button>
-        </div>
-
-        <div class="card uplink-box">
-            <div class="label">Memory_Status</div>
-            <div class="title">82%</div>
-            <div class="tech-text">Capacity remaining: 1.2TB</div>
+        <div class="panel">
+            <div class="panel-header">ENCRYPTED_LOG_STREAM</div>
+            <div class="scroll-area" id="log-stream">
+                <div class="log-entry">INITIATING SECURE UPLINK...</div>
+                <div class="log-entry">DECRYPTING LOGON_SESSIONS...</div>
+            </div>
+            <div style="padding: 10px; border-top: 1px solid var(--glass-border);">
+                <button class="btn-small" style="width: 100%;" onclick="addLog()">FORCE_SYNC</button>
+            </div>
         </div>
 
     </div>
 
-    <div class="accent" style="position: fixed; bottom: 20px; right: 20px; font-size: 80px; font-weight: bold; opacity: 0.1; pointer-events: none;">75</div>
+    <script>
+        // Ügynök lista generálása
+        const agents = [
+            {id: 'G-078W', name: 'VENGEFUL SPIRIT'}, {id: 'G-079X', name: 'OBSIDIAN SENTINEL'},
+            {id: 'G-080Y', name: 'GHOSTLY FURY'}, {id: 'G-081Z', name: 'CURSED REVENANT'},
+            {id: 'G-082A', name: 'VENOMOUS SHADE'}, {id: 'G-083B', name: 'MYSTIC ENIGMA'},
+            {id: 'G-084C', name: 'WRAITH AVENGER'}, {id: 'G-085D', name: 'SPECTRAL FURY'}
+        ];
 
+        const listContainer = document.getElementById('agent-list');
+        agents.forEach(a => {
+            listContainer.innerHTML += `
+                <div class="agent-row">
+                    <span class="dim">${a.id}</span>
+                    <span>${a.name}</span>
+                </div>
+            `;
+        });
+
+        // "Élő" óra
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Minimalista chart animáció
+        const chart = document.getElementById('chart');
+        for(let i=0; i<15; i++) {
+            const h = Math.floor(Math.random() * 80) + 10;
+            chart.innerHTML += `<div class="bar" style="height: ${h}%"></div>`;
+        }
+
+        // Élő log funkció
+        const logs = [
+            "Agent Sn4ke lost communication in Havana",
+            "Data encryption at 82%",
+            "High-value target extracted in Cairo",
+            "Firewall reroute: ACCESS_CODE 4557",
+            "Unusual traffic from Node-6 detected"
+        ];
+        
+        function addLog() {
+            const container = document.getElementById('log-stream');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="accent">[${new Date().toLocaleTimeString()}]</span> ${logs[Math.floor(Math.random()*logs.length)]}`;
+            container.prepend(entry);
+        }
+
+        setInterval(addLog, 4000); // 4 másodpercenként új log
+    </script>
 </body>
 </html>
