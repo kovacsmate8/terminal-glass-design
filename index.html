@@ -1,3 +1,178 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM_01 | Visual Language Prototype</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Design Tokens - A te általad meghatározott paraméterek */
+            --bg: #0A0A0A;
+            --fg: #FFFFFF;
+            --accent: #00FF88;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: 1px solid rgba(255, 255, 255, 0.1);
+            --blur: blur(32px);
+            
+            /* Constraints */
+            --unit: 8px;
+            --container: 1100px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: crosshair; /* Brutalist touch */
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Typography */
+        h1, h2, h3, .mono {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+        }
+
+        /* Grid Background - Az "Architectural Thinking" alapja */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: calc(var(--unit) * 4) calc(var(--unit) * 4);
+            z-index: -1;
+        }
+
+        /* Layout Structure */
+        .container {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: calc(var(--unit) * 6);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: calc(var(--unit) * 4) 0;
+            border-bottom: var(--border);
+            margin-bottom: calc(var(--unit) * 12);
+        }
+
+        .hero {
+            padding: calc(var(--unit) * 10) 0;
+            border-bottom: var(--border);
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 10vw, 96px);
+            line-height: 0.85;
+            margin-bottom: calc(var(--unit) * 4);
+        }
+
+        /* Core Components */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1px; /* Grid lines effect */
+            background: rgba(255,255,255,0.1);
+            border: var(--border);
+            margin-top: calc(var(--unit) * 12);
+        }
+
+        .card {
+            background: var(--bg);
+            padding: calc(var(--unit) * 6);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--unit) * 2);
+        }
+
+        .card:hover {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+        }
+
+        .card h3 {
+            color: var(--accent);
+            font-size: 14px;
+        }
+
+        /* Buttons & Actions */
+        .btn {
+            display: inline-block;
+            padding: calc(var(--unit) * 2) calc(var(--unit) * 5);
+            background: transparent;
+            border: 1px solid var(--fg);
+            color: var(--fg);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 14px;
+            transition: var(--transition);
+            margin-top: calc(var(--unit) * 4);
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+            transform: translateY(-2px);
+        }
+
+        /* Utilities */
+        .accent { color: var(--accent); }
+        .dim { opacity: 0.5; }
+        .space-between { display: flex; justify-content: space-between; align-items: baseline; }
+
+        footer {
+            margin-top: calc(var(--unit) * 20);
+            padding: calc(var(--unit) * 6) 0;
+            border-top: var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 56px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav>
+            <div class="mono">SYSTEM_01 <span class="dim">// PROTOTYPE</span></div>
+            <div class="mono accent">Vercel: Live</div>
+        </nav>
+
+        <section class="hero">
+            <div class="mono dim" style="margin-bottom: 16px;">[ Design Philosophy ]</div>
+            <h1>VISUALIZE<br>COMPLEXITY.</h1>
+            <p style="max-width: 500px; font-size: 18px; margin-top: 24px;">
+                Brutalist constraints applied to high-tech interfaces. 
+                Focus on <span class="accent">logic</span> over decoration.
+            </p>
+            <a href="#" class="btn">DEPLOY SYSTEM</a>
+        </section>
+
 <section class="section-2" id="archive" style="border-top: 1px solid var(--glass-border);">
     <div class="tactical-container">
         <div class="left-panel">
@@ -42,3 +217,39 @@
         </div>
     </div>
 </section>
+
+        
+        <div class="grid">
+            <div class="card">
+                <div class="space-between">
+                    <h3>01_COLOR</h3>
+                    <span class="mono dim">#00FF88</span>
+                </div>
+                <p>Limited palette for maximum brand recall. One accent to rule attention.</p>
+            </div>
+            <div class="card">
+                <div class="space-between">
+                    <h3>02_GRID</h3>
+                    <span class="mono dim">8PX_BASE</span>
+                </div>
+                <p>Strict architectural alignment. Negative space is a functional element.</p>
+            </div>
+            <div class="card">
+                <div class="space-between">
+                    <h3>03_CODE</h3>
+                    <span class="mono dim">HTML/CSS</span>
+                </div>
+                <p>No abstraction between design and production. GitHub is the source of truth.</p>
+            </div>
+        </div>
+
+        <footer>
+            <div class="space-between mono">
+                <div class="dim">© 2026 // ALL RIGHTS RESERVED</div>
+                <div class="accent">BUILT_BY_AI_COLLABORATION</div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
