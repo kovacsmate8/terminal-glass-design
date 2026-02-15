@@ -3,195 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL.GLASS // AGENT_DATA</title>
+    <title>AGENT DATA OVERVIEW</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --color-bg: #000000;
+            --color-bg: #0a0a0a;
+            --color-text: #ffffff;
             --color-accent: #00FF88;
-            --glass-border: rgba(0, 255, 136, 0.15);
-            --font-mono: 'JetBrains Mono', monospace;
+            --border: 1px solid #333;
+            --font: 'JetBrains Mono', monospace;
         }
 
         body {
-            font-family: var(--font-mono);
-            background: var(--color-bg);
-            color: #fff;
-            padding: 20px;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font);
             font-size: 11px;
-            overflow: hidden; /* Dashboard stílus: nincs görgetés, fix layout */
             height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         /* HEADER */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 20px; border: 1px solid var(--glass-border);
-            margin-bottom: 15px; text-transform: uppercase;
+            padding: 15px 25px; border-bottom: var(--border);
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* GRID SYSTEM */
+        /* MAIN LAYOUT */
         .dashboard {
             display: grid;
-            grid-template-columns: 280px 1fr 320px;
-            grid-template-rows: 1fr 200px;
-            gap: 15px;
-            height: calc(100vh - 80px);
+            grid-template-columns: 320px 1fr 350px;
+            flex-grow: 1;
         }
 
-        .panel {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--glass-border);
-            position: relative;
-            overflow: hidden;
-            display: flex; flex-direction: column;
+        .panel { border-right: var(--border); display: flex; flex-direction: column; }
+        .panel:last-child { border-right: none; }
+
+        .section-header {
+            padding: 12px; text-align: center; border-bottom: var(--border);
+            background: rgba(255,255,255,0.02); text-transform: uppercase;
         }
 
-        .panel-header {
-            background: var(--glass-border);
-            padding: 8px 12px;
-            font-weight: bold;
-            display: flex; justify-content: space-between;
-        }
+        /* LEFT: AGENT ALLOCATION */
+        .stats-top { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: var(--border); }
+        .stat-box { padding: 15px; text-align: center; border-right: var(--border); }
+        .stat-box:last-child { border-right: none; }
+        .stat-val { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { opacity: 0.5; font-size: 9px; }
 
-        /* AGENT LIST */
-        .scroll-area { overflow-y: auto; flex-grow: 1; }
-        .agent-row {
-            display: flex; justify-content: space-between;
-            padding: 8px 12px; border-bottom: 1px solid rgba(0, 255, 136, 0.05);
-            cursor: pointer; transition: 0.2s;
+        .table-header { display: flex; padding: 10px; border-bottom: var(--border); opacity: 0.7; }
+        .agent-list { overflow-y: auto; flex-grow: 1; }
+        .agent-row { 
+            display: flex; padding: 10px; border-bottom: 1px solid #1a1a1a; 
+            cursor: pointer; transition: 0.2s; 
         }
         .agent-row:hover { background: rgba(0, 255, 136, 0.1); color: var(--color-accent); }
+        .col-id { width: 80px; }
+        .col-name { flex-grow: 1; }
 
-        /* CHART AREA (Minimalist Placeholder) */
-        .chart-container {
-            flex-grow: 1; position: relative;
-            display: flex; align-items: flex-end; gap: 10px; padding: 20px;
-        }
-        .bar { background: var(--color-accent); width: 100%; transition: height 0.5s ease; opacity: 0.6; }
-
-        /* LIVE LOG */
-        #log-stream { padding: 12px; font-size: 10px; line-height: 1.4; color: rgba(255, 255, 255, 0.7); }
-        .log-entry { margin-bottom: 8px; border-left: 1px solid var(--color-accent); padding-left: 8px; }
-
-        /* INTERACTIVE BUTTONS */
-        .btn-small {
-            background: transparent; border: 1px solid var(--color-accent);
-            color: var(--color-accent); padding: 2px 6px; font-family: var(--font-mono);
-            font-size: 9px; cursor: pointer;
-        }
-        .btn-small:hover { background: var(--color-accent); color: #000; }
+        /* CENTER: ACTIVITY & MISSION */
+        .activity-log { height: 180px; border-bottom: var(--border); overflow-y: auto; padding: 10px; }
+        .log-line { margin-bottom: 8px; opacity: 0.8; }
+        .mission-graph { flex-grow: 1; border-bottom: var(--border); position: relative; padding: 20px; }
+        
+        /* RIGHT: 3D WIREFRAME & CHAT */
+        #wireframe-container { height: 250px; border-bottom: var(--border); position: relative; }
+        .chat-activity { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 10px; line-height: 1.5; }
+        .chat-entry { margin-bottom: 15px; border-left: 2px solid var(--color-accent); padding-left: 10px; }
 
         .accent { color: var(--color-accent); }
         .dim { opacity: 0.4; }
 
         /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--glass-border); }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #333; }
     </style>
 </head>
 <body>
 
     <header>
-        <div><span class="accent">●</span> SYSTEM_CORE // AGENT_DATA_OVERVIEW</div>
-        <div id="clock">00:00:00</div>
-        <div class="dim">SECURE_CHANNEL_88-X</div>
+        <div style="font-size: 14px;">AGENT DATA OVERVIEW</div>
+        <div id="clock" class="dim">00/00/2026 00:00:00</div>
+        <div class="dim">JM SW RW ↺ ⤳ ⋯</div>
     </header>
 
     <div class="dashboard">
-        
         <div class="panel">
-            <div class="panel-header"><span>AGENT_ALLOCATION</span><span>QTY</span></div>
-            <div class="scroll-area" id="agent-list">
-                </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 15px;">
-            <div class="panel" style="flex-grow: 1;">
-                <div class="panel-header">MISSION_ACTIVITY_OVERVIEW</div>
-                <div class="chart-container" id="chart">
-                    </div>
+            <div class="section-header">Agent Allocation</div>
+            <div class="stats-top">
+                <div class="stat-box"><div class="stat-val">190</div><div class="stat-label">Active Field</div></div>
+                <div class="stat-box"><div class="stat-val">990</div><div class="stat-label">Undercover</div></div>
+                <div class="stat-box"><div class="stat-val">290</div><div class="stat-label">Training</div></div>
             </div>
-            <div class="panel" style="height: 200px;">
-                <div class="panel-header">MISSION_INFORMATION</div>
-                <div style="padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-                    <div>
-                        <div class="accent">Successful Missions</div>
-                        <div style="font-size: 24px; margin: 10px 0;">426</div>
-                        <div class="dim">AVG_RISK: LOW</div>
-                    </div>
-                    <div>
-                        <div style="color: #ff0055;">Failed Missions</div>
-                        <div style="font-size: 24px; margin: 10px 0;">12</div>
-                        <div class="dim">AVG_RISK: HIGH</div>
-                    </div>
-                </div>
-            </div>
+            <div class="table-header"><div class="col-id">Agent ID</div><div class="col-name">Agent Identifier</div></div>
+            <div class="agent-list" id="agentList"></div>
         </div>
 
         <div class="panel">
-            <div class="panel-header">ENCRYPTED_LOG_STREAM</div>
-            <div class="scroll-area" id="log-stream">
-                <div class="log-entry">INITIATING SECURE UPLINK...</div>
-                <div class="log-entry">DECRYPTING LOGON_SESSIONS...</div>
+            <div class="section-header">Activity Log</div>
+            <div class="activity-log" id="activityLog">
+                <div class="log-line"><span class="dim">25/06/2025 09:29</span> - Agent gh0st Fire completed mission in <span class="accent">Berlin</span></div>
+                <div class="log-line"><span class="dim">25/06/2025 08:12</span> - Agent dr4g0n V3in extracted target in <span class="accent">Cairo</span></div>
             </div>
-            <div style="padding: 10px; border-top: 1px solid var(--glass-border);">
-                <button class="btn-small" style="width: 100%;" onclick="addLog()">FORCE_SYNC</button>
+            <div class="section-header">Mission Activity Overview</div>
+            <div class="mission-graph">
+                <svg width="100%" height="100%" viewBox="0 0 500 150">
+                    <polyline fill="none" stroke="#00FF88" stroke-width="2" points="0,100 50,80 100,110 150,70 200,90 250,60 300,100 350,80 400,110 450,70 500,90" />
+                    <line x1="0" y1="120" x2="500" y2="120" stroke="#333" stroke-dasharray="4" />
+                </svg>
+            </div>
+            <div class="section-header">Mission Information</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 20px; gap: 20px;">
+                <div><span class="accent">▶ Successful Missions</span><div style="font-size: 20px; margin: 10px 0;">426</div><div class="dim">AVG_RISK: LOW</div></div>
+                <div><span style="color: #ff3366;">▶ Failed Missions</span><div style="font-size: 20px; margin: 10px 0;">12</div><div class="dim">AVG_RISK: HIGH</div></div>
             </div>
         </div>
 
+        <div class="panel">
+            <div class="section-header">Encrypted Chat Activity</div>
+            <div id="wireframe-container"></div>
+            <div class="chat-activity" id="chatLog">
+                <div class="chat-entry">
+                    <span class="dim"># 2025-06-17 14:23 UTC</span><br>
+                    > [AGNT:gh0stFire] :: INIT >> loading secure channel...
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Ügynök lista generálása
-        const agents = [
-            {id: 'G-078W', name: 'VENGEFUL SPIRIT'}, {id: 'G-079X', name: 'OBSIDIAN SENTINEL'},
-            {id: 'G-080Y', name: 'GHOSTLY FURY'}, {id: 'G-081Z', name: 'CURSED REVENANT'},
-            {id: 'G-082A', name: 'VENOMOUS SHADE'}, {id: 'G-083B', name: 'MYSTIC ENIGMA'},
-            {id: 'G-084C', name: 'WRAITH AVENGER'}, {id: 'G-085D', name: 'SPECTRAL FURY'}
-        ];
+        // --- 3D FORGÓ HÁLÓ (THREE.JS) ---
+        const container = document.getElementById('wireframe-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
 
-        const listContainer = document.getElementById('agent-list');
-        agents.forEach(a => {
-            listContainer.innerHTML += `
-                <div class="agent-row">
-                    <span class="dim">${a.id}</span>
-                    <span>${a.name}</span>
-                </div>
-            `;
+        const geometry = new THREE.IcosahedronGeometry(1.5, 2);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00FF88, wireframe: true, transparent: true, opacity: 0.3 });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        camera.position.z = 4;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            sphere.rotation.y += 0.005;
+            sphere.rotation.x += 0.002;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- DINAMIKUS ADATOK ---
+        const agentNames = ["VENGEFUL SPIRIT", "OBSIDIAN SENTINEL", "GHOSTLY FURY", "CURSED REVENANT", "VENOMOUS SHADE", "MYSTIC ENIGMA"];
+        const agentList = document.getElementById('agentList');
+        
+        agentNames.forEach((name, i) => {
+            const row = document.createElement('div');
+            row.className = 'agent-row';
+            row.innerHTML = `<div class="col-id dim">G-0${78+i}${String.fromCharCode(87+i)}</div><div class="col-name">${name}</div>`;
+            agentList.appendChild(row);
         });
 
-        // "Élő" óra
+        // Óra
         setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleString();
         }, 1000);
 
-        // Minimalista chart animáció
-        const chart = document.getElementById('chart');
-        for(let i=0; i<15; i++) {
-            const h = Math.floor(Math.random() * 80) + 10;
-            chart.innerHTML += `<div class="bar" style="height: ${h}%"></div>`;
-        }
-
-        // Élő log funkció
-        const logs = [
-            "Agent Sn4ke lost communication in Havana",
-            "Data encryption at 82%",
-            "High-value target extracted in Cairo",
-            "Firewall reroute: ACCESS_CODE 4557",
-            "Unusual traffic from Node-6 detected"
-        ];
-        
-        function addLog() {
-            const container = document.getElementById('log-stream');
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.innerHTML = `<span class="accent">[${new Date().toLocaleTimeString()}]</span> ${logs[Math.floor(Math.random()*logs.length)]}`;
-            container.prepend(entry);
-        }
-
-        setInterval(addLog, 4000); // 4 másodpercenként új log
+        // Ablak átméretezés kezelése
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
     </script>
 </body>
 </html>
