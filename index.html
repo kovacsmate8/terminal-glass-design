@@ -3,88 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL.GLASS // AGENT DATA OVERVIEW</title>
+    <title>AGENT DATA OVERVIEW // TERMINAL.GLASS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* CORE SETTINGS - High Density Typography */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --color-bg: #000000;
-            --color-text: #ffffff;
-            --color-accent: #00FF88;
-            --color-danger: #ff3366;
-            --border-color: #222;
-            --font-mono: 'JetBrains Mono', monospace;
+            --bg: #000000;
+            --text: #ffffff;
+            --accent: #00FF88;
+            --danger: #ff3366;
+            --border: #222;
+            --font: 'JetBrains Mono', monospace;
         }
 
         body {
-            background: var(--color-bg);
-            color: var(--color-text);
-            font-family: var(--font-mono);
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
             font-size: 10px;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            line-height: 1.2;
         }
 
         /* HEADER */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 20px; border-bottom: 1px solid var(--border-color);
+            padding: 8px 20px; border-bottom: 1px solid var(--border);
             text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* LAYOUT GRID */
+        /* DASHBOARD GRID */
         .dashboard {
             display: grid;
-            grid-template-columns: 280px 1fr 320px; /* Pontosabb arányok */
+            grid-template-columns: 280px 1fr 320px;
             flex-grow: 1;
         }
 
         .panel { 
             display: flex; flex-direction: column; 
-            border-right: 1px solid var(--border-color);
+            border-right: 1px solid var(--border);
         }
         .panel:last-child { border-right: none; }
 
+        /* SECTION LABELS - Fixed height to avoid spacing */
         .section-label {
-            padding: 6px; text-align: center; border-bottom: 1px solid var(--border-color);
-            background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.7);
-            font-size: 9px;
+            padding: 6px; text-align: center; border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.6);
+            font-size: 9px; height: 22px; display: flex; align-items: center; justify-content: center;
+            text-transform: uppercase;
         }
 
-        /* LEFT PANEL: AGENT LIST (High Density) */
-        .agent-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid var(--border-color); }
-        .stat-item { padding: 12px 5px; text-align: center; border-right: 1px solid var(--border-color); }
+        /* LEFT PANEL: AGENT LIST */
+        .agent-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+        .stat-item { padding: 10px 5px; text-align: center; border-right: 1px solid var(--border); }
+        .stat-item:last-child { border-right: none; }
         .stat-num { font-size: 16px; font-weight: bold; display: block; }
-        .stat-tag { font-size: 8px; opacity: 0.4; }
+        .stat-tag { font-size: 8px; opacity: 0.4; text-transform: uppercase; }
 
-        .table-row { display: grid; grid-template-columns: 70px 1fr; padding: 6px 10px; border-bottom: 1px solid #111; }
-        .table-head { font-weight: bold; border-bottom: 1px solid var(--border-color); color: rgba(255,255,255,0.5); }
-        .agent-scroll { overflow-y: auto; flex-grow: 1; }
+        .table-row { display: grid; grid-template-columns: 75px 1fr; padding: 5px 12px; border-bottom: 1px solid #111; }
+        .table-head { font-weight: bold; border-bottom: 1px solid var(--border); color: var(--accent); opacity: 0.8; }
+        .scroll-area { overflow-y: auto; flex-grow: 1; }
 
         /* CENTER PANEL */
-        .activity-log { height: 120px; overflow-y: auto; padding: 10px; border-bottom: 1px solid var(--border-color); }
-        .log-entry { margin-bottom: 4px; color: rgba(255,255,255,0.6); }
-        .graph-container { flex-grow: 1; padding: 20px; border-bottom: 1px solid var(--border-color); position: relative; }
-        .mission-info { display: grid; grid-template-columns: 1fr 1fr; padding: 15px; gap: 20px; }
+        .log-display { height: 110px; overflow-y: auto; padding: 10px; border-bottom: 1px solid var(--border); }
+        .log-entry { margin-bottom: 4px; color: rgba(255,255,255,0.6); font-size: 9px; }
+        
+        .graph-container { height: 160px; padding: 15px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; }
+        
+        .mission-info { display: grid; grid-template-columns: 1fr 1fr; padding: 15px; gap: 20px; flex-grow: 1; }
+        .info-header { font-size: 10px; margin-bottom: 5px; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
+        .info-value { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+        .info-sub { font-size: 9px; opacity: 0.4; }
 
         /* RIGHT PANEL: 3D & CHAT */
-        #wireframe-canvas { height: 220px; border-bottom: 1px solid var(--border-color); }
-        .chat-scroll { flex-grow: 1; overflow-y: auto; padding: 15px; font-size: 9px; }
-        .chat-msg { margin-bottom: 12px; border-left: 2px solid var(--color-accent); padding-left: 8px; }
+        #wireframe-canvas { height: 230px; border-bottom: 1px solid var(--border); }
+        .chat-container { flex-grow: 1; overflow-y: auto; padding: 15px; font-size: 9px; }
+        .chat-msg { margin-bottom: 12px; border-left: 2px solid var(--accent); padding-left: 10px; }
 
-        .accent { color: var(--color-accent); }
-        .danger { color: var(--color-danger); }
+        /* UTILS */
+        .accent { color: var(--accent); }
+        .danger { color: var(--danger); }
         .dim { opacity: 0.4; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #333; }
     </style>
 </head>
 <body>
 
     <header>
-        <div style="font-size: 11px;">AGENT DATA OVERVIEW <span class="dim" style="margin-left: 15px;">Last Update 05/06/2025 20:00</span></div>
-        <div id="clock">2/15/2026, 7:50:00 AM</div>
+        <div>AGENT DATA OVERVIEW <span class="dim" style="margin-left: 15px;">Last Update 05/06/2025 20:00</span></div>
+        <div id="clock">00/00/2026 00:00:00</div>
         <div class="dim">JM SW RW ↺ ⤳ ⋯</div>
     </header>
 
@@ -94,35 +107,35 @@
             <div class="agent-stats">
                 <div class="stat-item"><span class="stat-num">190</span><span class="stat-tag">Active Field</span></div>
                 <div class="stat-item"><span class="stat-num">990</span><span class="stat-tag">Undercover</span></div>
-                <div class="stat-item" style="border:none;"><span class="stat-num">290</span><span class="stat-tag">Training</span></div>
+                <div class="stat-item"><span class="stat-num">290</span><span class="stat-tag">Training</span></div>
             </div>
             <div class="table-row table-head"><div>Agent ID</div><div>Agent Identifier</div></div>
-            <div class="agent-scroll" id="agentList"></div>
+            <div class="scroll-area" id="agent-list"></div>
         </div>
 
         <div class="panel">
             <div class="section-label">Activity Log</div>
-            <div class="activity-log" id="activityLog"></div>
+            <div class="log-display" id="activity-log"></div>
             
             <div class="section-label">Mission Activity Overview</div>
             <div class="graph-container">
-                <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 500 150">
-                    <path d="M0,120 L50,100 L100,110 L150,80 L200,95 L250,70 L300,105 L350,85 L400,115 L500,80" fill="none" stroke="#00FF88" stroke-width="1.5" />
-                    <path d="M0,130 L100,125 L200,135 L300,128 L400,132 L500,125" fill="none" stroke="#333" stroke-dasharray="3,3" />
+                <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 500 100">
+                    <path d="M0,80 L50,65 L100,75 L150,45 L200,60 L250,35 L300,70 L350,55 L400,85 L500,50" fill="none" stroke="#00FF88" stroke-width="1.5" />
+                    <line x1="0" y1="95" x2="500" y2="95" stroke="#222" stroke-dasharray="2" />
                 </svg>
             </div>
 
             <div class="section-label">Mission Information</div>
             <div class="mission-info">
                 <div>
-                    <div class="accent">▶ Successful Missions</div>
-                    <div style="font-size: 22px; margin: 5px 0;">426</div>
-                    <div class="dim">High Risk: 190 | Med: 426 | Low: 920</div>
+                    <div class="info-header accent"><span>▶</span> Successful Missions</div>
+                    <div class="info-value">426</div>
+                    <div class="info-sub">HIGH RISK: 190 | MED: 426 | LOW: 920</div>
                 </div>
                 <div>
-                    <div class="danger">▶ Failed Missions</div>
-                    <div style="font-size: 22px; margin: 5px 0;">12</div>
-                    <div class="dim">High Risk: 190 | Med: 426 | Low: 920</div>
+                    <div class="info-header danger"><span>▶</span> Failed Missions</div>
+                    <div class="info-value">12</div>
+                    <div class="info-sub">HIGH RISK: 190 | MED: 426 | LOW: 920</div>
                 </div>
             </div>
         </div>
@@ -130,12 +143,12 @@
         <div class="panel">
             <div class="section-label">Encrypted Chat Activity</div>
             <div id="wireframe-canvas"></div>
-            <div class="chat-scroll" id="chatLog"></div>
+            <div class="chat-container" id="chat-log"></div>
         </div>
     </div>
 
     <script>
-        // 3D Wireframe
+        // --- 3D ROTATING MESH ---
         const container = document.getElementById('wireframe-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -148,28 +161,44 @@
         function animate() { requestAnimationFrame(animate); sphere.rotation.y += 0.003; renderer.render(scene, camera); }
         animate();
 
-        // Adat feltöltés
-        const agents = ["VENGEFUL SPIRIT", "OBSIDIAN SENTINEL", "GHOSTLY FURY", "CURSED REVENANT", "VENOMOUS SHADE", "MYSTIC ENIGMA", "WRAITH AVENGER", "SPECTRAL FURY", "PHANTOM STRIKE"];
-        const list = document.getElementById('agentList');
+        // --- DATA POPULATION ---
+        const agents = ["VENGEFUL SPIRIT", "OBSIDIAN SENTINEL", "GHOSTLY FURY", "CURSED REVENANT", "VENOMOUS SHADE", "MYSTIC ENIGMA", "WRAITH AVENGER", "SPECTRAL FURY", "PHANTOM STRIKE", "DARK VENGEANCE", "ECLIPSE WARDEN", "SILENT BLADE"];
+        const aList = document.getElementById('agent-list');
         agents.forEach((name, i) => {
-            list.innerHTML += `<div class="table-row"><div class="dim">G-0${78+i}W</div><div>${name}</div></div>`;
+            aList.innerHTML += `<div class="table-row"><div class="dim">G-0${78+i}W</div><div>${name}</div></div>`;
         });
 
-        const logs = ["Agent gh0st Fire completed mission in Berlin", "Agent dr4g0n V3in extracted target in Cairo", "Agent sn4ke Sh4de lost communication in Havana"];
-        const logBox = document.getElementById('activityLog');
-        logs.forEach(l => logBox.innerHTML += `<div class="log-entry"><span class="dim">25/06/2025</span> - ${l}</div>`);
+        const logEntries = [
+            "Agent gh0st Fire completed mission in Berlin",
+            "Agent dr4g0n V3in extracted high-value target in Cairo",
+            "Agent sn4ke Sh4de lost communication in Havana",
+            "Uplink established: Node-7 secured",
+            "Encryption protocols updated to v9.4"
+        ];
+        const lList = document.getElementById('activity-log');
+        logEntries.forEach(log => {
+            lList.innerHTML += `<div class="log-entry"><span class="dim">25/06/2025 09:29</span> - ${log}</div>`;
+        });
 
-        const chatMessages = [
+        const messages = [
             {time: "14:23 UTC", user: "gh0stFire", text: "INIT >> loading secure channel..."},
             {time: "14:34 UTC", user: "zeroNight", text: "RESP >> ...ACK ...syncing #546"},
             {time: "14:37 UTC", user: "bl4ckRaven", text: "relay @ channel 8.2 ... xΔ"}
         ];
-        const chatBox = document.getElementById('chatLog');
-        chatMessages.forEach(m => {
-            chatBox.innerHTML += `<div class="chat-msg"><span class="dim"># ${m.time}</span><br>> [${m.user}] :: ${m.text}</div>`;
+        const cList = document.getElementById('chat-log');
+        messages.forEach(m => {
+            cList.innerHTML += `<div class="chat-msg"><span class="dim"># ${m.time}</span><br>> [AGNT:${m.user}] :: ${m.text}</div>`;
         });
 
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
+        // Real-time Clock
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString('en-US'); }, 1000);
+        
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
     </script>
 </body>
 </html>
