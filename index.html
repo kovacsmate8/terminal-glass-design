@@ -1,176 +1,44 @@
-<!DOCTYPE html>
-<html lang="hu">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SYSTEM_01 | Visual Language</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            /* Design Tokens */
-            --bg: #0A0A0A;
-            --fg: #FFFFFF;
-            --accent: #00FF88;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: 1px solid rgba(255, 255, 255, 0.1);
-            --blur: blur(32px);
-            
-            /* Constraints */
-            --unit: 8px;
-            --container: 1100px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: crosshair; /* Brutalist touch */
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--fg);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-
-        /* Typography */
-        h1, h2, .mono {
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-        }
-
-        /* Grid Background */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: calc(var(--unit) * 4) calc(var(--unit) * 4);
-            z-index: -1;
-        }
-
-        /* Layout */
-        .container {
-            max-width: var(--container);
-            margin: 0 auto;
-            padding: calc(var(--unit) * 10) calc(var(--unit) * 4);
-        }
-
-        header {
-            border-bottom: var(--border);
-            padding-bottom: calc(var(--unit) * 4);
-            margin-bottom: calc(var(--unit) * 8);
-        }
-
-        .hero {
-            height: 60vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-bottom: var(--border);
-        }
-
-        /* Components */
-        .card {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border: var(--border);
-            padding: calc(var(--unit) * 4);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--accent);
-        }
-
-        .btn {
-            display: inline-block;
-            padding: calc(var(--unit) * 2) calc(var(--unit) * 4);
-            background: transparent;
-            border: 1px solid var(--fg);
-            color: var(--fg);
-            text-decoration: none;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: var(--bg);
-        }
-
-        .accent-text { color: var(--accent); }
-
-        /* Grid System */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: calc(var(--unit) * 4);
-            margin-top: calc(var(--unit) * 8);
-        }
-
-        /* Philosophical Footer */
-        footer {
-            margin-top: calc(var(--unit) * 20);
-            padding-top: calc(var(--unit) * 4);
-            border-top: var(--border);
-            opacity: 0.5;
-            font-size: 12px;
-        }
-
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <header>
-            <div class="mono">System_01 // <span class="accent-text">Active</span></div>
-        </header>
-
-        <section class="hero">
-            <h1 style="font-size: clamp(40px, 8vw, 80px); line-height: 0.9;">
-                Code is the <br> <span class="accent-text">Aesthetic.</span>
-            </h1>
-            <p style="margin-top: 24px; max-width: 400px; opacity: 0.8;">
-                Visual language built on constraints. 
-                Designed to make complexity visible.
-            </p>
-        </section>
-
-        <div class="grid-3">
-            <div class="card">
-                <h2 class="mono">01_Clarity</h2>
-                <p>No mystery. No confusion. Every pixel has a functional purpose.</p>
+<section class="section-2" id="archive" style="border-top: 1px solid var(--glass-border);">
+    <div class="tactical-container">
+        <div class="left-panel">
+            <div class="check-connect" style="text-align: left;">PROJECT_LOG.LOG</div>
+            <div class="tech-lines">
+                <div class="accent">> ACCESSING ENCRYPTED SECTOR...</div>
+                <div>FETCHING DATA BLOCK 0x442...</div>
+                <div class="dim">MD5: 4e9f5d1... OK</div>
             </div>
-            <div class="card">
-                <h2 class="mono">02_Depth</h2>
-                <p>Information density balanced by glassmorphism and negative space.</p>
-            </div>
-            <div class="card">
-                <h2 class="mono">03_Speed</h2>
-                <p>Built for the edge. Optimized for Vercel. Deployed in seconds.</p>
+            <div class="grid-dots">
+                <div class="grid-dot active">01</div>
+                <div class="grid-dot">02</div>
+                <div class="grid-dot">03</div>
+                <div class="grid-dot">04</div>
             </div>
         </div>
-
-        <div style="margin-top: 80px; text-align: center;">
-            <a href="#" class="btn">INITIALIZE SYSTEM</a>
+        
+        <div class="center-panel">
+             <div class="data-container" style="padding: 24px; border-style: dashed;">
+                <div class="info-line">
+                    <span class="info-label">PROJECT_ID</span>
+                    <span class="info-dashes"></span>
+                    <span class="accent">CYBER_AESTHETICS_v1</span>
+                </div>
+                <p class="tech-lines" style="margin-top: 16px;">
+                    Visual system development for high-frequency trading interfaces. 
+                    Focus on latency visualization and neural response optimization.
+                </p>
+                <button class="btn" style="border: 1px solid var(--color-accent); background: transparent; color: var(--color-accent); padding: 8px 16px; font-family: var(--font-mono); margin-top: 16px; cursor: pointer;">DECRYPT_DETAILS</button>
+             </div>
         </div>
 
-        <footer>
-            <div class="mono">Built with intention. No compromise. © 2026</div>
-        </footer>
+        <div class="right-panel">
+            <div class="vertical-text" style="position: static; transform: none; writing-mode: horizontal-tb; text-align: right;">
+                ARCHIVE_CAPACITY: 82%
+            </div>
+            <div class="bottom-grid" style="justify-content: end;">
+                <div class="bottom-grid-cell active"></div>
+                <div class="bottom-grid-cell active"></div>
+                <div class="bottom-grid-cell"></div>
+            </div>
+        </div>
     </div>
-
-</body>
-</html>
+</section>
