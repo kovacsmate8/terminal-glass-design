@@ -8,311 +8,178 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --color-bg: #000000;
-            --color-surface: #0A0A0A;
-            --color-text: #FFFFFF;
             --color-accent: #00FF88;
-            --color-danger: #FF0055;
-            --color-dim: rgba(255, 255, 255, 0.3);
-            --glass-layer: rgba(255, 255, 255, 0.03);
+            --color-dim: rgba(0, 255, 136, 0.3);
             --glass-border: rgba(0, 255, 136, 0.15);
-            --glass-glow: rgba(0, 255, 136, 0.3);
-            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --font-mono: 'JetBrains Mono', monospace;
         }
-
-        html { scroll-behavior: smooth; }
 
         body {
             font-family: var(--font-mono);
             background: var(--color-bg);
-            background-image: radial-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px; /* Finom pontrács a háttérben */
-            color: var(--color-text);
+            /* Sűrűbb pontrács a háttérben, hogy kitöltse a teret vizuálisan */
+            background-image: radial-gradient(rgba(0, 255, 136, 0.08) 1px, transparent 1px);
+            background-size: 25px 25px;
+            color: #FFFFFF;
             overflow-x: hidden;
-            line-height: 1.4;
         }
-
-        /* UTILITIES */
-        .accent { color: var(--color-accent); }
-        .dim { opacity: 0.4; }
-        .mono { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px; }
-
-        /* SCANLINE EFFECT */
-        .scanline {
-            position: fixed;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(180deg, transparent, var(--color-accent), transparent);
-            opacity: 0.05;
-            animation: scanline 10s linear infinite;
-            pointer-events: none;
-            z-index: 9999;
-        }
-        @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(200vh); } }
 
         /* NAVIGATION */
         .nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            backdrop-filter: blur(15px);
-            background: rgba(0, 0, 0, 0.85);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.8);
             border-bottom: 1px solid var(--glass-border);
+            padding: 10px 40px;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .nav-logo { color: var(--color-accent); font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-link { 
+            color: var(--color-dim); text-decoration: none; font-size: 10px; 
+            text-transform: uppercase; transition: 0.3s;
         }
-
-        .nav-logo {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--color-accent);
-            text-transform: uppercase;
-        }
-
-        .nav-links { display: flex; gap: 24px; }
-        .nav-link {
-            font-size: 10px;
-            color: var(--color-dim);
-            text-decoration: none;
-            transition: 0.2s;
-            text-transform: uppercase;
-        }
-        .nav-link:hover, .nav-link.active { color: var(--color-accent); text-shadow: 0 0 8px var(--color-accent); }
+        .nav-link:hover { color: var(--color-accent); }
 
         /* SECTIONS - COMPACT MODE */
         section {
-            min-height: 75vh; /* 100vh helyett kisebb, hogy ne legyen tenger üres hely */
-            padding: 80px 24px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            min-height: 450px; /* Fix minimum magasság a 100vh helyett */
+            padding: 100px 40px 60px;
+            display: flex; align-items: center; justify-content: center;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.05);
         }
 
-        /* REUSABLE COMPONENTS */
-        .tactical-container {
-            width: 100%;
-            max-width: 1300px;
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 30px;
+        .container {
+            width: 100%; max-width: 1400px;
+            display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 30px;
             align-items: center;
-        }
-
-        .data-container {
-            width: 100%;
-            max-width: 900px;
-            backdrop-filter: blur(10px);
-            background: var(--glass-layer);
-            border: 1px solid var(--glass-border);
-            padding: 30px;
-            position: relative;
         }
 
         /* UI ELEMENTS */
-        .project-card {
-            border-left: 2px solid var(--color-accent);
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            background: rgba(255, 255, 255, 0.02);
-            transition: 0.3s;
-        }
-        .project-card:hover { background: rgba(0, 255, 136, 0.05); transform: translateX(5px); }
-
-        .tech-lines { font-size: 11px; color: rgba(255, 255, 255, 0.5); font-family: var(--font-mono); }
-
-        .terminate-btn {
-            border: 1px solid var(--color-accent);
-            padding: 12px 20px;
-            background: transparent;
-            color: var(--color-accent);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .terminate-btn:hover { background: var(--color-accent); color: #000; box-shadow: 0 0 20px var(--glass-glow); }
-
-        .ascii-art { font-size: 7px; line-height: 1; color: var(--color-accent); opacity: 0.4; white-space: pre; }
-
-        input, textarea {
-            width: 100%;
-            background: rgba(255,255,255,0.03);
+        .panel {
             border: 1px solid var(--glass-border);
-            color: var(--color-accent);
-            font-family: var(--font-mono);
-            padding: 10px;
-            margin-top: 5px;
-            outline: none;
+            padding: 25px; background: rgba(0, 255, 136, 0.02);
+            position: relative;
         }
 
-        /* DECORATION */
-        .large-number {
+        .accent { color: var(--color-accent); }
+        .mono { text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        .tech-text { font-size: 10px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+        .btn {
+            border: 1px solid var(--color-accent);
+            padding: 10px 15px; background: transparent;
+            color: var(--color-accent); cursor: pointer;
+            font-family: var(--font-mono); font-size: 10px;
+            transition: 0.3s;
+        }
+        .btn:hover { background: var(--color-accent); color: black; box-shadow: 0 0 15px var(--color-accent); }
+
+        /* PROJECT CARDS */
+        .project-list { display: flex; flex-direction: column; gap: 15px; }
+        .card { border-left: 2px solid var(--color-accent); padding: 10px 20px; background: rgba(255,255,255,0.02); }
+
+        /* DECOR */
+        .large-bg-num {
             position: fixed; bottom: 20px; right: 20px;
-            font-size: 100px; font-weight: 700; color: rgba(0, 255, 136, 0.03);
-            pointer-events: none; z-index: -1;
+            font-size: 150px; font-weight: bold; color: rgba(0, 255, 136, 0.03);
+            z-index: -1;
         }
 
-        @media (max-width: 900px) {
-            .tactical-container { grid-template-columns: 1fr; gap: 40px; }
-            section { min-height: auto; padding: 100px 20px 60px; }
+        @media (max-width: 1000px) {
+            .container { grid-template-columns: 1fr; }
+            section { min-height: auto; }
         }
     </style>
 </head>
 <body>
 
-<div class="scanline"></div>
-<div class="large-number">75</div>
-
-<nav class="nav">
-    <div class="nav-container">
-        <div class="nav-logo">Terminal.Glass <span class="dim">// v2.0-stable</span></div>
+    <nav class="nav">
+        <div class="nav-logo">TERMINAL.GLASS // V2.0-STABLE</div>
         <div class="nav-links">
             <a href="#tactical" class="nav-link">Tactical</a>
             <a href="#archive" class="nav-link">Archive</a>
             <a href="#data" class="nav-link">Data</a>
             <a href="#uplink" class="nav-link">Uplink</a>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<section id="tactical">
-    <div class="tactical-container">
-        <div class="left-panel">
-            <div class="mono accent">> Sector_002</div>
-            <div class="tech-lines" style="margin: 15px 0;">
-                N.LARYNGEUS SUPERIOR CHECK<br>
-                RAMUS EXTERNUS // <span class="accent">CONNECTED</span>
-            </div>
-            <div class="ascii-art">
-  ______
- /      \
-|  UNST  |
- \______/
-            </div>
-        </div>
+    <div class="large-bg-num">75</div>
 
-        <div class="center-panel" style="text-align: center; border: 1px solid var(--glass-border); padding: 40px; background: rgba(255,255,255,0.01);">
-            <div class="mono" style="font-size: 20px; letter-spacing: 5px;">SYNCHRONIZING...</div>
-            <div class="tech-lines" style="margin-top: 15px;">
-                CORTICAL INTERFACE PROTOCOL: ACTIVE<br>
-                <span class="dim">ENCRYPTION: 1024-BIT_RSA</span>
+    <section id="tactical">
+        <div class="container">
+            <div>
+                <div class="accent mono">> SECTOR_002</div>
+                <div class="tech-text" style="margin-top: 10px;">
+                    STATUS: <span class="accent">CONNECTED</span><br>
+                    N.LARYNGEUS CHECK: OK
+                </div>
+            </div>
+            <div class="panel" style="text-align: center;">
+                <div class="mono" style="font-size: 18px; margin-bottom: 10px;">SYNCHRONIZING...</div>
+                <div class="tech-text">CORTICAL INTERFACE PROTOCOL: ACTIVE</div>
+                <div class="tech-text" style="opacity: 0.3; margin-top: 5px;">ENCRYPTION: 1024-BIT_RSA</div>
+            </div>
+            <div style="text-align: right;">
+                <div class="mono" style="margin-bottom: 10px;">THREAT: <span style="color: #FF0055;">HIGH</span></div>
+                <button class="btn">TERMINATE_PROCESS</button>
             </div>
         </div>
+    </section>
 
-        <div class="right-panel" style="text-align: right;">
-            <div class="mono dim">THREAT: <span class="accent">HIGH</span></div>
-            <div class="tech-lines" style="margin: 15px 0;">
-                DISTRICT: TOKYO, JP<br>
-                LOC: 35.652, 139.839
+    <section id="archive" style="background: rgba(0,0,0,0.4);">
+        <div class="container">
+            <div class="accent mono">> NEURAL_ARCHIVE</div>
+            <div class="project-list">
+                <div class="card">
+                    <div class="accent mono">Project_01 // Cyber_Aesthetics</div>
+                    <div class="tech-text">Visual system development for high-frequency trading.</div>
+                </div>
+                <div class="card">
+                    <div class="accent mono">Project_02 // Tactical_UI</div>
+                    <div class="tech-text">HUD interface for medical-grade simulation.</div>
+                </div>
             </div>
-            <button class="terminate-btn">TERMINATE_PROCESS</button>
-        </div>
-    </div>
-</section>
-
-<section id="archive" style="background: rgba(255,255,255,0.01);">
-    <div class="tactical-container">
-        <div class="left-panel">
-            <div class="mono accent">> Neural_Archive</div>
-            <p class="tech-lines">ACCESSING ENCRYPTED SECTOR 0x442...</p>
-        </div>
-        <div class="center-panel">
-            <div class="project-card">
-                <div class="mono accent" style="font-size: 12px;">Project_01 // Cyber_Aesthetics</div>
-                <p class="tech-lines">Visual system development for high-frequency trading. Optimized for latency visualization.</p>
-            </div>
-            <div class="project-card">
-                <div class="mono accent" style="font-size: 12px;">Project_02 // Tactical_UI</div>
-                <p class="tech-lines">HUD interface for medical-grade simulation environments. Latin nomenclature integration.</p>
+            <div style="text-align: right;" class="tech-text">
+                TOTAL_BLOCKS: 02<br>MEMORY: 82%
             </div>
         </div>
-        <div class="right-panel" style="text-align: right;">
-            <div class="mono dim">Total_Projects: 02</div>
-            <div class="mono dim">Memory: 82%</div>
-        </div>
-    </div>
-</section>
+    </section>
 
-<section id="data">
-    <div class="data-container">
-        <div class="mono accent" style="margin-bottom: 20px;">> System_Check_Logs</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;" class="tech-lines">
-            <div style="border-left: 1px solid var(--glass-border); padding-left: 15px;">
-                <div class="accent">455.KL0.530 - ACTIVE</div>
-                <div class="dim">FT // 002-SVS_STATUS</div>
-            </div>
-            <div style="border-left: 1px solid var(--glass-border); padding-left: 15px;">
-                <div class="accent">SPD.AD 200 >> 450ms</div>
-                <div class="dim">CHECK_LOGS: NO_REJECTION</div>
+    <section id="data">
+        <div class="container" style="grid-template-columns: 1fr;">
+            <div class="panel" style="max-width: 800px; margin: 0 auto; width: 100%;">
+                <div class="accent mono" style="margin-bottom: 20px;">> SYSTEM_CHECK_LOGS</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" class="tech-text">
+                    <div style="border-left: 1px solid var(--glass-border); padding-left: 15px;">
+                        <span class="accent">455.KL0.530 - ACTIVE</span><br>FT // 002-SVS_STATUS
+                    </div>
+                    <div style="border-left: 1px solid var(--glass-border); padding-left: 15px;">
+                        <span class="accent">SPD.AD 200 >> 450ms</span><br>LOGS: NO_REJECTION
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="uplink" style="background: #050505;">
-    <div class="data-container" style="max-width: 500px;">
-        <div class="mono accent" style="margin-bottom: 20px;">Initialize_Uplink</div>
-        <form>
-            <div style="margin-bottom: 15px;">
-                <label class="mono dim" style="font-size: 9px;">Origin_ID</label>
-                <input type="text" placeholder="USER_@_DOMAIN.COM">
+    <section id="uplink" style="background: rgba(0,0,0,0.5);">
+        <div class="container" style="grid-template-columns: 1fr;">
+            <div style="max-width: 500px; margin: 0 auto; width: 100%; text-align: center;">
+                <div class="accent mono" style="margin-bottom: 20px;">INITIALIZE_UPLINK</div>
+                <input type="text" placeholder="IDENTITY_TAG" style="width: 100%; background: #111; border: 1px solid var(--glass-border); padding: 10px; color: var(--color-accent); font-family: var(--font-mono); margin-bottom: 10px;">
+                <button class="btn" style="width: 100%;">EXECUTE_TRANSMISSION</button>
             </div>
-            <div style="margin-bottom: 20px;">
-                <label class="mono dim" style="font-size: 9px;">Payload_Data</label>
-                <textarea rows="3" placeholder="ENTER TRANSMISSION..."></textarea>
-            </div>
-            <button type="button" class="terminate-btn" style="width: 100%;">EXECUTE_TRANSMISSION</button>
-        </form>
-    </div>
-</section>
-
-<footer style="padding: 40px 24px; border-top: 1px solid var(--glass-border);">
-    <div class="nav-container" style="opacity: 0.5;">
-        <div class="tech-lines">
-            UPTIME: 1542:04:12<br>
-            STABILITY: 99.9%
         </div>
-        <div class="mono" style="text-align: right; font-size: 9px;">
-            TERMINAL.GLASS // © 2026
-        </div>
-    </div>
-</footer>
+    </section>
 
-<script>
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section');
-
-    window.onscroll = () => {
-        let current = "";
-        sections.forEach((section) => {
-            const sectionTop = section.offsetTop;
-            if (pageYOffset >= sectionTop - 150) {
-                current = section.getAttribute("id");
-            }
-        });
-
-        navLinks.forEach((a) => {
-            a.classList.remove("active");
-            if (a.getAttribute("href").includes(current)) {
-                a.classList.add("active");
-            }
-        });
-    };
-</script>
+    <footer style="padding: 30px; border-top: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-size: 9px; opacity: 0.4;" class="mono">
+        <div>UPTIME: 1542:04:12</div>
+        <div>TERMINAL.GLASS // © 2026</div>
+    </footer>
 
 </body>
 </html>
