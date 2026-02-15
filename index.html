@@ -22,8 +22,8 @@
             --color-danger: #FF0055;
             --color-dim: rgba(255, 255, 255, 0.3);
             --glass-layer: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(0, 255, 136, 0.2);
-            --glass-glow: rgba(0, 255, 136, 0.4);
+            --glass-border: rgba(0, 255, 136, 0.15);
+            --glass-glow: rgba(0, 255, 136, 0.3);
             --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
         }
 
@@ -32,22 +32,25 @@
         body {
             font-family: var(--font-mono);
             background: var(--color-bg);
+            background-image: radial-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; /* Finom pontrács a háttérben */
             color: var(--color-text);
             overflow-x: hidden;
+            line-height: 1.4;
         }
 
         /* UTILITIES */
         .accent { color: var(--color-accent); }
         .dim { opacity: 0.4; }
-        .mono { font-family: var(--font-mono); text-transform: uppercase; }
+        .mono { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px; }
 
         /* SCANLINE EFFECT */
         .scanline {
             position: fixed;
             top: 0; left: 0; right: 0; height: 2px;
             background: linear-gradient(180deg, transparent, var(--color-accent), transparent);
-            opacity: 0.1;
-            animation: scanline 8s linear infinite;
+            opacity: 0.05;
+            animation: scanline 10s linear infinite;
             pointer-events: none;
             z-index: 9999;
         }
@@ -58,124 +61,114 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 1000;
-            backdrop-filter: blur(10px);
-            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.85);
             border-bottom: 1px solid var(--glass-border);
         }
 
         .nav-container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 14px 24px;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .nav-logo {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--color-accent);
-            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        .nav-links { display: flex; gap: 32px; }
+        .nav-links { display: flex; gap: 24px; }
         .nav-link {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--color-dim);
             text-decoration: none;
-            transition: 0.3s;
+            transition: 0.2s;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
-        .nav-link:hover, .nav-link.active { color: var(--color-accent); }
+        .nav-link:hover, .nav-link.active { color: var(--color-accent); text-shadow: 0 0 8px var(--color-accent); }
 
-        /* SECTIONS BASE */
+        /* SECTIONS - COMPACT MODE */
         section {
-            min-height: 100vh;
-            padding: 120px 24px 80px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 75vh; /* 100vh helyett kisebb, hogy ne legyen tenger üres hely */
+            padding: 80px 24px 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         /* REUSABLE COMPONENTS */
         .tactical-container {
             width: 100%;
-            max-width: 1600px;
+            max-width: 1300px;
             display: grid;
             grid-template-columns: 1fr 2fr 1fr;
-            gap: 40px;
+            gap: 30px;
+            align-items: center;
         }
 
         .data-container {
             width: 100%;
-            max-width: 1000px;
-            backdrop-filter: blur(12px);
+            max-width: 900px;
+            backdrop-filter: blur(10px);
             background: var(--glass-layer);
             border: 1px solid var(--glass-border);
-            padding: 48px;
+            padding: 30px;
             position: relative;
         }
 
-        /* SECTION 1: TACTICAL (ORIGINAL) */
-        .left-panel, .right-panel { display: flex; flex-direction: column; gap: 24px; }
-        .status-dots { display: flex; gap: 8px; }
-        .dot { width: 6px; height: 6px; background: var(--color-accent); border-radius: 50%; animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        .tech-lines { font-size: 11px; line-height: 1.8; color: rgba(255, 255, 255, 0.6); }
-        .action-btn { 
-            width: 50px; height: 50px; border: 1px solid var(--glass-border); 
-            background: transparent; cursor: pointer; transition: 0.3s;
+        /* UI ELEMENTS */
+        .project-card {
+            border-left: 2px solid var(--color-accent);
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: 0.3s;
         }
-        .action-btn:hover { border-color: var(--color-accent); box-shadow: 0 0 15px var(--glass-glow); }
+        .project-card:hover { background: rgba(0, 255, 136, 0.05); transform: translateX(5px); }
 
-        .ascii-art { font-size: 6px; line-height: 1; color: var(--color-accent); opacity: 0.3; white-space: pre; }
+        .tech-lines { font-size: 11px; color: rgba(255, 255, 255, 0.5); font-family: var(--font-mono); }
 
         .terminate-btn {
             border: 1px solid var(--color-accent);
-            padding: 16px; background: transparent; color: var(--color-accent);
-            font-family: var(--font-mono); font-weight: 700; cursor: pointer;
-            transition: 0.3s; letter-spacing: 2px;
-        }
-        .terminate-btn:hover { background: rgba(0, 255, 136, 0.1); box-shadow: 0 0 20px var(--glass-glow); }
-
-        /* SECTION 3: ARCHIVE (NEW) */
-        .project-card {
-            border-left: 1px solid var(--color-accent);
-            padding: 20px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.01);
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--color-accent);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            cursor: pointer;
             transition: 0.3s;
         }
-        .project-card:hover { background: var(--glass-layer); }
+        .terminate-btn:hover { background: var(--color-accent); color: #000; box-shadow: 0 0 20px var(--glass-glow); }
 
-        /* SECTION 4: UPLINK (NEW) */
+        .ascii-art { font-size: 7px; line-height: 1; color: var(--color-accent); opacity: 0.4; white-space: pre; }
+
         input, textarea {
             width: 100%;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--glass-border);
             color: var(--color-accent);
             font-family: var(--font-mono);
-            padding: 12px;
-            margin-top: 8px;
+            padding: 10px;
+            margin-top: 5px;
             outline: none;
         }
-        input:focus { border-color: var(--color-accent); }
 
         /* DECORATION */
         .large-number {
-            position: fixed; bottom: 40px; right: 40px;
-            font-size: 120px; font-weight: 700; color: rgba(0, 255, 136, 0.05);
+            position: fixed; bottom: 20px; right: 20px;
+            font-size: 100px; font-weight: 700; color: rgba(0, 255, 136, 0.03);
             pointer-events: none; z-index: -1;
         }
 
-        @media (max-width: 1024px) {
-            .tactical-container { grid-template-columns: 1fr; }
-            .large-number { display: none; }
+        @media (max-width: 900px) {
+            .tactical-container { grid-template-columns: 1fr; gap: 40px; }
+            section { min-height: auto; padding: 100px 20px 60px; }
         }
     </style>
 </head>
@@ -186,7 +179,7 @@
 
 <nav class="nav">
     <div class="nav-container">
-        <div class="nav-logo">Terminal.Glass</div>
+        <div class="nav-logo">Terminal.Glass <span class="dim">// v2.0-stable</span></div>
         <div class="nav-links">
             <a href="#tactical" class="nav-link">Tactical</a>
             <a href="#archive" class="nav-link">Archive</a>
@@ -199,66 +192,57 @@
 <section id="tactical">
     <div class="tactical-container">
         <div class="left-panel">
-            <div class="mono accent">Sector_002</div>
-            <div class="status-dots">
-                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-            </div>
-            <div class="tech-lines">
-                <div>N.LARYNGEUS SUPERIOR CHECK</div>
-                <div>RAMUS EXTERNUS // CONNECTED</div>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="action-btn"></button>
-                <button class="action-btn"></button>
+            <div class="mono accent">> Sector_002</div>
+            <div class="tech-lines" style="margin: 15px 0;">
+                N.LARYNGEUS SUPERIOR CHECK<br>
+                RAMUS EXTERNUS // <span class="accent">CONNECTED</span>
             </div>
             <div class="ascii-art">
-████████████████
-████        ████
-    ████████
+  ______
+ /      \
+|  UNST  |
+ \______/
             </div>
         </div>
 
-        <div class="center-panel" style="text-align: center;">
-            <div class="ascii-art" style="opacity: 0.1; font-size: 8px; margin-bottom: 20px;">
-                CORE_NEURAL_UNIT_v2.7
-            </div>
-            <div class="mono" style="font-size: 18px; letter-spacing: 4px;">SYNCHRONIZING...</div>
-            <div class="tech-lines" style="margin-top: 20px;">
-                CORTICAL INTERFACE PROTOCOL ACTIVE<br>
-                QUANTUM ENCRYPTION: 1024-BIT
+        <div class="center-panel" style="text-align: center; border: 1px solid var(--glass-border); padding: 40px; background: rgba(255,255,255,0.01);">
+            <div class="mono" style="font-size: 20px; letter-spacing: 5px;">SYNCHRONIZING...</div>
+            <div class="tech-lines" style="margin-top: 15px;">
+                CORTICAL INTERFACE PROTOCOL: ACTIVE<br>
+                <span class="dim">ENCRYPTION: 1024-BIT_RSA</span>
             </div>
         </div>
 
-        <div class="right-panel">
-            <div class="mono dim" style="text-align: right;">THREAT: <span class="accent">HIGH</span></div>
-            <div class="tech-lines" style="text-align: right;">
+        <div class="right-panel" style="text-align: right;">
+            <div class="mono dim">THREAT: <span class="accent">HIGH</span></div>
+            <div class="tech-lines" style="margin: 15px 0;">
                 DISTRICT: TOKYO, JP<br>
-                35.652832, 139.839478
+                LOC: 35.652, 139.839
             </div>
             <button class="terminate-btn">TERMINATE_PROCESS</button>
         </div>
     </div>
 </section>
 
-<section id="archive" style="background: #050505;">
+<section id="archive" style="background: rgba(255,255,255,0.01);">
     <div class="tactical-container">
         <div class="left-panel">
-            <div class="mono accent">Neural_Archive</div>
-            <div class="tech-lines">FETCHING DATA_BLOCKS...<br>ACCESSING ENCRYPTED SECTOR 0x442</div>
+            <div class="mono accent">> Neural_Archive</div>
+            <p class="tech-lines">ACCESSING ENCRYPTED SECTOR 0x442...</p>
         </div>
         <div class="center-panel">
             <div class="project-card">
                 <div class="mono accent" style="font-size: 12px;">Project_01 // Cyber_Aesthetics</div>
-                <p class="tech-lines" style="margin-top: 8px;">Visual system development for high-frequency trading. Optimized for latency visualization.</p>
+                <p class="tech-lines">Visual system development for high-frequency trading. Optimized for latency visualization.</p>
             </div>
             <div class="project-card">
                 <div class="mono accent" style="font-size: 12px;">Project_02 // Tactical_UI</div>
-                <p class="tech-lines" style="margin-top: 8px;">HUD interface for medical-grade simulation environments. Latin nomenclature integration.</p>
+                <p class="tech-lines">HUD interface for medical-grade simulation environments. Latin nomenclature integration.</p>
             </div>
         </div>
-        <div class="right-panel">
-            <div class="mono dim">Project_Count: 02</div>
-            <div class="mono dim">Capacity: 82%</div>
+        <div class="right-panel" style="text-align: right;">
+            <div class="mono dim">Total_Projects: 02</div>
+            <div class="mono dim">Memory: 82%</div>
         </div>
     </div>
 </section>
@@ -266,14 +250,12 @@
 <section id="data">
     <div class="data-container">
         <div class="mono accent" style="margin-bottom: 20px;">> System_Check_Logs</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" class="tech-lines">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;" class="tech-lines">
             <div style="border-left: 1px solid var(--glass-border); padding-left: 15px;">
-                <div>231K - 10.003 // 0092091</div>
                 <div class="accent">455.KL0.530 - ACTIVE</div>
                 <div class="dim">FT // 002-SVS_STATUS</div>
             </div>
             <div style="border-left: 1px solid var(--glass-border); padding-left: 15px;">
-                <div>HEX_CODE: 000:2009:50912094</div>
                 <div class="accent">SPD.AD 200 >> 450ms</div>
                 <div class="dim">CHECK_LOGS: NO_REJECTION</div>
             </div>
@@ -281,40 +263,38 @@
     </div>
 </section>
 
-<section id="uplink" style="background: linear-gradient(to bottom, #000, #080808);">
-    <div class="data-container" style="max-width: 600px;">
-        <div class="mono accent" style="margin-bottom: 30px;">Initialize_Uplink</div>
+<section id="uplink" style="background: #050505;">
+    <div class="data-container" style="max-width: 500px;">
+        <div class="mono accent" style="margin-bottom: 20px;">Initialize_Uplink</div>
         <form>
-            <div style="margin-bottom: 20px;">
-                <label class="mono dim" style="font-size: 10px;">Origin_ID</label>
+            <div style="margin-bottom: 15px;">
+                <label class="mono dim" style="font-size: 9px;">Origin_ID</label>
                 <input type="text" placeholder="USER_@_DOMAIN.COM">
             </div>
             <div style="margin-bottom: 20px;">
-                <label class="mono dim" style="font-size: 10px;">Payload_Data</label>
-                <textarea rows="5" placeholder="ENTER TRANSMISSION..."></textarea>
+                <label class="mono dim" style="font-size: 9px;">Payload_Data</label>
+                <textarea rows="3" placeholder="ENTER TRANSMISSION..."></textarea>
             </div>
             <button type="button" class="terminate-btn" style="width: 100%;">EXECUTE_TRANSMISSION</button>
         </form>
     </div>
 </section>
 
-<footer style="padding: 60px 24px; border-top: 1px solid var(--glass-border); background: #000;">
+<footer style="padding: 40px 24px; border-top: 1px solid var(--glass-border);">
     <div class="nav-container" style="opacity: 0.5;">
         <div class="tech-lines">
-            <div>HOST_STABILITY: 99.9%</div>
-            <div>UPTIME: 1542:04:12</div>
+            UPTIME: 1542:04:12<br>
+            STABILITY: 99.9%
         </div>
-        <div class="mono" style="text-align: right; font-size: 10px;">
-            TERMINAL.GLASS // NO_REJECTION_PROTOCOL<br>
-            © 2026 HUMAN_INTERFACE_LABS
+        <div class="mono" style="text-align: right; font-size: 9px;">
+            TERMINAL.GLASS // © 2026
         </div>
     </div>
 </footer>
 
 <script>
-    // Smooth scrolling active link highlight
-    const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section');
 
     window.onscroll = () => {
         let current = "";
