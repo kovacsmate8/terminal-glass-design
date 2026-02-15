@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,15 +36,33 @@
             position: relative;
             z-index: 1;
         }
-        h1 {
-            font-size: 3em;
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff5722;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        p {
-            font-size: 1.5em;
+        button:hover {
+            background-color: #e64a19;
         }
     </style>
+    <script>
+        function showAlert() {
+            alert("Button clicked!");
+        }
+    </script>
 </head>
 <body>
+
+<div class="hero">
+    <div class="hero-content">
+        <button onclick="showAlert()">Click Me!</button>
+    </div>
+</div>
 
 </body>
 </html>
